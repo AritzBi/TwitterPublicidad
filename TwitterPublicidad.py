@@ -4,6 +4,7 @@ import nltk
 import csv
 import re
 from nltk.stem.snowball import SpanishStemmer
+from nltk import word_tokenize
 diasDeLaSemana = { " lunes ", " martes ", " miercoles ", " jueves ", " viernes " }
 signosDePuntacion = { ";", "¿", ": ", " ? ", " : ", " ¿ ", "\\? ", " +"}
 pronombres = { " me ", " te ", " se ", " nos ", " os " }
@@ -23,7 +24,6 @@ def cargarListas(file,lista):
 def getNumberOfMentions(lista):
 	pattern=re.compile(r"@\w*")
 	for tuit in lista:
-		print tuit.texto
 		matches=re.findall(pattern,tuit.texto)
 		tuit.texto=pattern.sub(" ",tuit.texto)
 		tuit.numMentions=len(matches)
@@ -48,8 +48,6 @@ class Tuit(object):
 		self.numURLs=0
 		self.numMentions=0
 
-
-
 cargarListas("csv/Publicidad.csv",publicidad)
 cargarListas("csv/NoPublicidad.csv",noPublicidad)
 getNumberOfMentions(publicidad)
@@ -68,4 +66,31 @@ for tuit in noPublicidad:
 	reemplazarValores(tuit.texto,pronombres)
 	reemplazarValores(tuit.texto,determinantes)
 	reemplazarValores(tuit.texto,prepositions)
+
+for tuit in publicidad:
+	tokens=word_tokenize(tuit.texto.decode('utf-8'))
+	array=[]
+	for token in tokens:
+		array.append(stemmer(token))
+	tuit.texto=array
+
+for tuit in noPublicidad:
+	tokens=word_tokenize(tuit.texto.decode('utf-8'))
+	array=[]
+	for token in tokens:
+		array.append(stemmer(token))
+	tuit.texto=array
+stringToInsert=""
+file=open('NoPublicidad.txt', 'w')
+for tuit in noPublicidad:
+	tmp=', '.join(tuit.texto)+"\n"
+	stringToInsert=stringToInsert+tmp.encode('utf-8')
+file.write(stringToInsert)
+stringToInsert=""
+file=open('Publicidad.txt', 'w')
+for tuit in publicidad:
+	tmp=', '.join(tuit.texto)+"\n"
+	stringToInsert=stringToInsert+tmp.encode('utf-8')
+file.write(stringToInsert)
+
 
