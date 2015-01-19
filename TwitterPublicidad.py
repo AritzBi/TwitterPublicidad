@@ -5,6 +5,7 @@ import csv
 import re
 from nltk.stem.snowball import SpanishStemmer
 from nltk import word_tokenize
+import random
 diasDeLaSemana = { " lunes ", " martes ", " miercoles ", " jueves ", " viernes " }
 signosDePuntacion = { ";", "¿", ": ", " ? ", " : ", " ¿ ", "\\? ", " +"}
 pronombres = { " me ", " te ", " se ", " nos ", " os " }
@@ -103,7 +104,7 @@ for tuit in publicidad:
 	stringToInsert=stringToInsert+tmp.encode('utf-8')
 file.write(stringToInsert)
 
-keyWords={"descuent","ofert","compr","product","prueb","rebaj","%"}
+keyWords={"descuent","ofert","compr","product","prueb","rebaj","%","person","videojueg","amor","agradec","dto","nuev","regal","busc","ahorr","navid","adquier","form","no","cuand","quer","algo","muy","tod"}
 arrayData=[]
 for tuit in publicidad:
 	data=[];
@@ -125,6 +126,7 @@ for tuit in noPublicidad:
 	data.append(tuit.numMentions)
 	data.append(0)
 	arrayData.append(data)
+random.shuffle(arrayData)
 stringToInsert=""
 file=open('FinalData.txt', 'w')
 for data in arrayData:
