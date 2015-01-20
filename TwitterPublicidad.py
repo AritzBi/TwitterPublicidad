@@ -48,6 +48,11 @@ def getNumberMatches(texto,palabra):
 		if token==palabra:
 			cont=cont+1
 	return cont
+def getNumNumbers(lista):
+	pattern=re.compile(r"\d+")
+	for tuit in lista:
+		matches=re.findall(pattern,tuit.texto)
+		tuit.numNumbers=len(matches)
 
 class Tuit(object):
 	def __init__(self,texto,seguidores,siguiendo,tuits):
@@ -57,6 +62,7 @@ class Tuit(object):
 		self.tuits=tuits
 		self.numURLs=0
 		self.numMentions=0
+		self.numNumbers=0
 
 cargarListas("csv/Publicidad.csv",publicidad)
 cargarListas("csv/NoPublicidad.csv",noPublicidad)
@@ -64,6 +70,8 @@ getNumberOfMentions(publicidad)
 getNumberOfMentions(noPublicidad)
 getNumberOfUrls(publicidad)
 getNumberOfUrls(noPublicidad)
+getNumNumbers(publicidad)
+getNumNumbers(noPublicidad)
 for tuit in publicidad:
 	reemplazarValores(tuit.texto,diasDeLaSemana)
 	reemplazarValores(tuit.texto,signosDePuntacion)
@@ -104,7 +112,7 @@ for tuit in publicidad:
 	stringToInsert=stringToInsert+tmp.encode('utf-8')
 file.write(stringToInsert)
 
-keyWords={"descuent","ofert","compr","product","prueb","rebaj","%","person","videojueg","amor","agradec","dto","nuev","regal","busc","ahorr","navid","adquier","form","no","cuand","quer","algo","muy","tod"}
+keyWords={"descuent","ofert","compr","product","prueb","rebaj","%","person","videojueg","amor","agradec","dto","nuev","regal","busc","ahorr","navid","adquier","form","no","cuand","quer","algo","muy","tod","gratis","€".decode('utf-8'),"segu"}
 arrayData=[]
 for tuit in publicidad:
 	data=[];
@@ -113,6 +121,10 @@ for tuit in publicidad:
 		data.append(matches)
 	data.append(tuit.numURLs)
 	data.append(tuit.numMentions)
+	#data.append(tuit.numNumbers)
+	#data.append(tuit.siguiendo)
+	#data.append(tuit.seguidores)
+	#data.append(tuit.tuits)
 	data.append(1)
 	arrayData.append(data)
 
@@ -124,6 +136,10 @@ for tuit in noPublicidad:
 		data.append(matches)
 	data.append(tuit.numURLs)
 	data.append(tuit.numMentions)
+	#data.append(tuit.numNumbers)
+	#data.append(tuit.siguiendo)
+	#data.append(tuit.seguidores)
+	#data.append(tuit.tuits)
 	data.append(0)
 	arrayData.append(data)
 random.shuffle(arrayData)
@@ -136,33 +152,6 @@ for data in arrayData:
 	tmp = tmp[:-1]
 	stringToInsert=stringToInsert+tmp.encode('utf-8')+"\n"
 file.write(stringToInsert)
-"""for tuit in publicidad:
-	data={};
-	for keyWord in keyWords:
-		matches=getNumberMatches(tuit.texto,keyWord)
-		data[keyWord]=matches
-	data['tipo']=1
-	data['urls']=tuit.numURLs
-	data['mentions']=tuit.numMentions
-	arrayData.append(data)
 
-
-for tuit in noPublicidad:
-	data={};
-	for keyWord in keyWords:
-		matches=getNumberMatches(tuit.texto,keyWord)
-		data[keyWord]=matches
-	data['tipo']=0
-	data['urls']=tuit.numURLs
-	data['mentions']=tuit.numMentions
-	arrayData.append(data)"""
-
-"""datos_entrenamiento = arrayData[0:int(0.9*len(arrayData))]
-datos_test          = arrayData[int(0.9*len(arrayData)):]
-aciertos = 0;
-
-Estimaciones={0,1}
-for dato_prueba in datos_test:
-	print "Dato de prueba: "+dato_prueba+"\n"""
 
 
